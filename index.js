@@ -13,11 +13,14 @@ app.post('/hook', async (req, res) => {
 	try {
 		console.log('Received hook', req.body.data);
 
+		const eventName = req.body.event;
 		const data = JSON.parse(req.body.data);
+		const deviceId = req.body.coreid;
 
 		await influx.writePoints([{
-			measurement: 'vehicle',
-			fields: data
+			measurement: eventName,
+			fields: data,
+			tags: { deviceId }
 		}]);
 
 		res.json({ ok: true });
